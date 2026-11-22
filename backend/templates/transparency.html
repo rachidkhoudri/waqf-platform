@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+
+{% block title %}بوابة الشفافية والحوكمة والامتثال القانوني | {{ platform_name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="text-center max-w-3xl mx-auto mb-10">
+        <span class="text-xs font-bold text-waqf-700 bg-waqf-50 px-3 py-1 rounded-full border border-waqf-200">الخطوات 59 - 63: الشفافية والمتابعة المستمرة</span>
+        <h1 class="text-3xl font-black text-slate-900 mt-3">بوابة الإفصاح والتدقيق والحوكمة العامة</h1>
+        <p class="text-slate-600 text-sm mt-2">
+            انطلاقاً من مبادئ النزاهة الشرعية والقانونية، تنشر منصة وقف تاك بياناتها المالية وتقارير هيئة الرقابة الشرعية المستقلة، وتوفر مساراً شفافاً للشكاوى والتحكيم.
+        </p>
+    </div>
+
+    <!-- بطاقات المؤشرات العامة الحية -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+            <span class="text-xs text-slate-500 block">إجمالي أصول الأوقاف النقدية</span>
+            <div class="text-2xl font-black text-slate-900 mt-1" id="kpi-total-waqf">0.00 د.ج</div>
+            <span class="text-[10px] text-slate-400 mt-2 block">في حسابات وقفية مستقلة ومفرزة</span>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+            <span class="text-xs text-emerald-700 block">العوائد الموزعة على الجهات المستفيدة</span>
+            <div class="text-2xl font-black text-emerald-900 mt-1" id="kpi-total-distrib">0.00 د.ج</div>
+            <span class="text-[10px] text-emerald-600 mt-2 block">وفق شروط الواقفين على الفئات الثمانية</span>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+            <span class="text-xs text-amber-700 block">رصيد صندوق احتياطي الأوقاف</span>
+            <div class="text-2xl font-black text-amber-900 mt-1" id="kpi-reserve-bal">0.00 د.ج</div>
+            <span class="text-[10px] text-amber-600 mt-2 block">لمواجهة مخاطر الاستثمار وتخفيف الخسائر</span>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+            <span class="text-xs text-slate-500 block">أجرة الناظر الفعلية المحصلة</span>
+            <div class="text-2xl font-black text-waqf-900 mt-1" id="kpi-nazir-fee">0.00 د.ج</div>
+            <span class="text-[10px] text-slate-400 mt-2 block">10% من صافي الأرباح المحققة فقط</span>
+        </div>
+    </div>
+
+    <!-- مصفوفة الامتثال للقانون الجزائري 25-06 -->
+    <div class="mt-12 bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+        <h2 class="text-lg font-bold text-slate-900 mb-2">مصفوفة الامتثال لأحكام قانون الأوقاف الجزائري رقم 25-06 لسنة 2025</h2>
+        <p class="text-xs text-slate-500 mb-6">مواءمة نصوص القانون الصادر بالجريدة الرسمية رقم 47 مع العمليات التقنية والمالية للمنصة:</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
+                <div class="font-bold text-slate-900 flex justify-between">
+                    <span>الوقف النقدي</span>
+                    <span class="text-waqf-700 bg-emerald-50 px-2 py-0.5 rounded">المادة 15</span>
+                </div>
+                <p class="text-slate-600">نص القانون صراحة على أن المال الموقوف يكون إما عقاراً أو منقولاً أو نقوداً؛ والمنصة متخصصة في إدارة الأوقاف النقدية الاستثمارية.</p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
+                <div class="font-bold text-slate-900 flex justify-between">
+                    <span>الوقف المؤبد والمؤقت</span>
+                    <span class="text-waqf-700 bg-emerald-50 px-2 py-0.5 rounded">المادتان 22 و 54</span>
+                </div>
+                <p class="text-slate-600">الأصل التأبيد، ويجوز اشتراط التأقيت حسب إرادة الواقف. تدعم المنصة الخيارين وتحدد مصير الأصل عند انتهاء المدة في عقد الوقف.</p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
+                <div class="font-bold text-slate-900 flex justify-between">
+                    <span>استقلالية الشخصية المعنوية</span>
+                    <span class="text-waqf-700 bg-emerald-50 px-2 py-0.5 rounded">المادة 31</span>
+                </div>
+                <p class="text-slate-600">يكتسب الوقف الشخصية المعنوية بمجرد إنشائه. تطبق المنصة مبدأ: لكل واقف وقف مستقل بحساباته وسجلاته المفصولة.</p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
+                <div class="font-bold text-slate-900 flex justify-between">
+                    <span>صيانة أصل الوقف ومنع التصرف</span>
+                    <span class="text-waqf-700 bg-emerald-50 px-2 py-0.5 rounded">المادة 33</span>
+                </div>
+                <p class="text-slate-600">لا يجوز التصرف في أصل الملك الوقفي بالبيع أو الهبة أو الإرث؛ يُستثمر رأس المال وتوزع الأرباح فقط للجهات المستفيدة.</p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
+                <div class="font-bold text-slate-900 flex justify-between">
+                    <span>الصيغ السبع ومجالات الاستثمار</span>
+                    <span class="text-waqf-700 bg-emerald-50 px-2 py-0.5 rounded">المواد 68 إلى 87</span>
+                </div>
+                <p class="text-slate-600">تطبيق العقود الموافقة للشريعة: إجارة، مزارعة، مساقاة، استصناع، مشاركة، مضاربة (قراض)، مرابحة، وسلم، في القطاعات الخمسة المعتمدة.</p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
+                <div class="font-bold text-slate-900 flex justify-between">
+                    <span>تعذر الصرف ونظرية الاستبدال</span>
+                    <span class="text-waqf-700 bg-emerald-50 px-2 py-0.5 rounded">المادة 35</span>
+                </div>
+                <p class="text-slate-600">إذا زالت الجهة المستفيدة يُحوّل الريع لأقرب جهة في ذات الفئة بقرار من الناظر وإشعار الواقف، وفق ما يقتضيه أصل الوقف.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- تقارير الهيئة الشرعية وقناة الشكاوى -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-10">
+        <!-- تقارير الهيئة الشرعية -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+            <h3 class="font-bold text-slate-900 text-base mb-3">تقارير التدقيق الشرعي الدورية المنشورة</h3>
+            <div id="sharia-reports-container" class="space-y-3 text-xs">
+                <!-- جلب تقارير الهيئة -->
+                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="font-bold text-slate-900">تقرير الاعتماد الشرعي لمنصة وقف تاك</span>
+                        <span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold">مطابق 100%</span>
+                    </div>
+                    <p class="text-slate-600 mt-1">تأكيد خلو جميع العقود والصيغ الاستثمارية من الربا والجهالة، والالتزام بمبدأ إلغاء ضمان رأس المال وحسابات الضمان.</p>
+                    <span class="text-[10px] text-slate-400 block mt-2">الهيئة الشرعية المستقلة للأوقاف | الربع الثالث 2025</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- قناة الشكاوى والتحكيم -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+            <h3 class="font-bold text-slate-900 text-base mb-1">قناة الشكاوى والتحكيم وفض النزاعات</h3>
+            <p class="text-xs text-slate-500 mb-4">مسار مكتوب للشكاوى يضمن الرد خلال 5 أيام عمل، مع إمكانية التحكيم الشرعي المستقل.</p>
+
+            <form onsubmit="handleComplaintSubmit(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">موضوع الشكوى أو الاستفسار</label>
+                    <input type="text" id="cmp_subject" required placeholder="مثال: استفسار حول نسبة توزيع الأرباح أو تقرير المشروع"
+                           class="w-full p-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-1 focus:ring-waqf-500">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">تصنيف الشكوى</label>
+                    <select id="cmp_category" class="w-full p-2.5 rounded-xl border border-slate-300">
+                        <option value="FINANCIAL">مالية ومحاسبية (Financial)</option>
+                        <option value="SHARIA">شرعية وفقهية (Sharia Compliance)</option>
+                        <option value="CONTRACTUAL">تعاقدية وقانونية (Contractual)</option>
+                        <option value="TECHNICAL">تقنية وتشغيلية (Technical)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">تفاصيل الشكوى</label>
+                    <textarea id="cmp_details" rows="3" required placeholder="اشرح تفاصيل الشكوى مع ذكر أرقام العقود أو المشاريع ذات الصلة..."
+                              class="w-full p-2.5 rounded-xl border border-slate-300 focus:outline-none"></textarea>
+                </div>
+
+                <button type="submit" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-xl transition shadow">
+                    إرسال الشكوى رسمياً إلى لجنة الحوكمة
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const token = localStorage.getItem("waqf_token");
+
+    document.addEventListener("DOMContentLoaded", () => {
+        loadTransparencyData();
+    });
+
+    async function loadTransparencyData() {
+        try {
+            const res = await fetch("/api/governance/public-kpis");
+            const data = await res.json();
+
+            document.getElementById("kpi-total-waqf").innerText = `${data.metrics.total_waqf_capital.toLocaleString()} د.ج`;
+            document.getElementById("kpi-total-distrib").innerText = `${data.metrics.total_returns_distributed_to_charities.toLocaleString()} د.ج`;
+            document.getElementById("kpi-reserve-bal").innerText = `${data.metrics.total_reserve_fund_balance.toLocaleString()} د.ج`;
+            document.getElementById("kpi-nazir-fee").innerText = `${data.metrics.total_nazir_fees_collected_10pct.toLocaleString()} د.ج`;
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async function handleComplaintSubmit(e) {
+        e.preventDefault();
+        if (!token) {
+            alert("يرجى تسجيل الدخول أولاً لرفع شكوى برقم ملفك الشخصي.");
+            window.location.href = "/login";
+            return;
+        }
+
+        const subject = document.getElementById("cmp_subject").value;
+        const category = document.getElementById("cmp_category").value;
+        const details = document.getElementById("cmp_details").value;
+
+        try {
+            const res = await fetch("/api/governance/complaints/submit", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({ subject, category, details })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.detail || "فشل إرسال الشكوى");
+
+            alert(data.message);
+            document.getElementById("cmp_subject").value = "";
+            document.getElementById("cmp_details").value = "";
+        } catch (err) {
+            alert(err.message);
+        }
+    }
+</script>
+{% endblock %}
+

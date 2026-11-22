@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+
+{% block title %}لوحة تحكم صاحب المشروع (طلب التمويل) | {{ platform_name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-6 border-b border-slate-200">
+        <div>
+            <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-purple-600"></span>
+                <h1 class="text-2xl font-black text-slate-900">لوحة تحكم رائد الأعمال (صاحب المشروع)</h1>
+                <span class="text-xs font-semibold bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full">طلب تمويل وإنجاز</span>
+            </div>
+            <p class="text-xs text-slate-500 mt-1">
+                قدّم طلبك لتمويل مشروعك بالصيغ الإسلامية المعتمدة واحصل على تمويل من المحفظة الوقفية والممولين.
+            </p>
+        </div>
+
+        <button onclick="openProjectModal()" class="bg-purple-700 hover:bg-purple-800 text-white font-bold px-5 py-2.5 rounded-xl shadow transition flex items-center gap-2 text-sm">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            <span>تقديم طلب تمويل جديد</span>
+        </button>
+    </div>
+
+    <!-- قائمة مشاريع صاحب المشروع -->
+    <div class="mt-8">
+        <h2 class="text-lg font-bold text-slate-900 mb-4">مشاريعك المقدمة وحالة المراجعة الشرعية والفنية</h2>
+        <div id="my-projects-list" class="space-y-6">
+            <div class="text-center text-slate-400 py-10 bg-white rounded-2xl border">
+                جاري تحميل مشاريعك...
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- مودال طلب تمويل جديد -->
+<div id="project-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden overflow-y-auto">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8">
+        <div class="flex justify-between items-center border-b pb-3 mb-6">
+            <div>
+                <h3 class="text-xl font-black text-slate-900">المرحلة السابعة: تقديم طلب تمويل جديد</h3>
+                <span class="text-xs text-slate-500">استمارة التمويل بالصيغ السبع وفق القانون 25-06</span>
+            </div>
+            <button onclick="closeProjectModal()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
+        </div>
+
+        <form onsubmit="handleCreateProject(event)" class="space-y-4 text-xs">
+            <div>
+                <label class="block font-bold text-slate-700 mb-1">عنوان المشروع</label>
+                <input type="text" id="prj_title" required placeholder="مثال: وحدة إنتاج الأعلاف المركبة أو مجمع عيادات طبية"
+                       class="w-full p-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">القطاع الاستثماري (الخمسة)</label>
+                    <select id="prj_sector" class="w-full p-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                        {% for k, s in sectors.items() %}
+                        <option value="{{ k }}">{{ s.name }} ({{ s.description[:35] }}...)</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">الصيغة الإسلامية المقترحة (السبع)</label>
+                    <select id="prj_formula" class="w-full p-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                        {% for k, f in formulas.items() %}
+                        <option value="{{ k }}">{{ f.name }} - {{ f.legal_article }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">المبلغ المطلوب ({{ currency }})</label>
+                    <input type="number" id="prj_amount" min="100000" step="50000" required value="2000000"
+                           class="w-full p-2.5 rounded-xl border border-slate-300 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">مدة التنفيذ (بالشهور)</label>
+                    <input type="number" id="prj_duration" min="3" max="60" required value="12"
+                           class="w-full p-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">العائد السنوي المتوقع (%)</label>
+                    <input type="number" id="prj_return" min="1" max="50" step="0.5" required value="15.0"
+                           class="w-full p-2.5 rounded-xl border border-slate-300 text-sm font-bold text-emerald-700 focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                </div>
+            </div>
+
+            <div>
+                <label class="block font-bold text-slate-700 mb-1">وصف مختصر لدراسة الجدوى والنشاط</label>
+                <textarea id="prj_desc" rows="3" required placeholder="اشرح طبيعة المشروع والمنتجات والأسواق المستهدفة وكيفية توليد الإيرادات..."
+                          class="w-full p-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none"></textarea>
+            </div>
+
+            <div>
+                <label class="block font-bold text-slate-700 mb-1">الضمانات المشروعة المقترحة</label>
+                <input type="text" id="prj_guarantees" value="رهن تجاري حيازي للعتاد والآلات وكفالة شخصية تضامنية"
+                       class="w-full p-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none">
+            </div>
+
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-[11px] text-slate-600 space-y-1">
+                <span class="font-bold text-slate-800 block">المرحلة الثامنة: المراجعة الفنية والشرعية</span>
+                <p>تراجع المنصة الملف مالياً وتتحقق من السجل الائتماني، وتعرض الطلب على الهيئة الشرعية المستقلة لاعتماد الصيغة وتصنيف المخاطر خلال 5 إلى 10 أيام عمل.</p>
+            </div>
+
+            <button type="submit" class="w-full bg-purple-700 hover:bg-purple-800 text-white font-bold py-3.5 rounded-xl transition text-sm shadow">
+                إرسال طلب التمويل للدراسة والاعتماد الشرعي
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const token = localStorage.getItem("waqf_token");
+
+    document.addEventListener("DOMContentLoaded", () => {
+        loadMyProjects();
+    });
+
+    function openProjectModal() {
+        document.getElementById("project-modal").classList.remove("hidden");
+    }
+    function closeProjectModal() {
+        document.getElementById("project-modal").classList.add("hidden");
+    }
+
+    async function loadMyProjects() {
+        try {
+            // جلب المشاريع من الـ API
+            const res = await fetch("/api/projects/opportunities");
+            const data = await res.json();
+            const container = document.getElementById("my-projects-list");
+
+            if (data.length === 0) {
+                container.innerHTML = `<div class="bg-white p-8 rounded-2xl text-center text-slate-400 border">لم تقدم أي مشاريع حتى الآن. اضغط على الزر أعلاه لتقديم طلبك الأول.</div>`;
+                return;
+            }
+
+            container.innerHTML = "";
+            data.forEach(p => {
+                const card = document.createElement("div");
+                card.className = "bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4 text-xs";
+                card.innerHTML = `
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b pb-3">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-black text-base text-slate-900">${p.title}</span>
+                                <span class="font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">${p.project_code}</span>
+                                <span class="bg-purple-100 text-purple-800 font-bold px-2 py-0.5 rounded">${p.sector_name}</span>
+                            </div>
+                            <span class="text-slate-400 text-[11px] block mt-1">الصيغة: <strong>${p.formula_name}</strong> | المدة: ${p.duration_months} شهر</span>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <span class="bg-emerald-100 text-emerald-800 font-bold px-3 py-1 rounded-lg">
+                                &check; مجاز شرعياً (الهيئة الشرعية)
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        <div class="p-3 bg-slate-50 rounded-xl">
+                            <span class="text-slate-500 block">المبلغ المطلوب</span>
+                            <span class="font-bold text-slate-900 text-sm mt-0.5 block">${p.requested_amount.toLocaleString()} د.ج</span>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl">
+                            <span class="text-slate-500 block">المبلغ المموّل حتى الآن</span>
+                            <span class="font-bold text-blue-700 text-sm mt-0.5 block">${p.funded_amount.toLocaleString()} د.ج</span>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl">
+                            <span class="text-slate-500 block">العائد المتوقع</span>
+                            <span class="font-bold text-emerald-700 text-sm mt-0.5 block">${p.expected_return_rate}%</span>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl">
+                            <span class="text-slate-500 block">فئة المخاطر</span>
+                            <span class="font-bold text-amber-700 text-sm mt-0.5 block">${p.risk_grade}</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-emerald-50/70 p-3 rounded-xl border border-emerald-100">
+                        <span class="font-bold text-emerald-900 block mb-0.5">رأي الهيئة الشرعية المستقلة:</span>
+                        <p class="text-emerald-800 text-[11px]">${p.sharia_opinion || 'المشروع مستوفٍ للضوابط الشرعية المعتمدة بالصيغة المحددة.'}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async function handleCreateProject(e) {
+        e.preventDefault();
+        const title = document.getElementById("prj_title").value;
+        const sector = document.getElementById("prj_sector").value;
+        const islamic_formula = document.getElementById("prj_formula").value;
+        const requested_amount = parseFloat(document.getElementById("prj_amount").value);
+        const duration_months = parseInt(document.getElementById("prj_duration").value);
+        const expected_return_rate = parseFloat(document.getElementById("prj_return").value);
+        const description = document.getElementById("prj_desc").value;
+        const guarantees = document.getElementById("prj_guarantees").value;
+
+        try {
+            const res = await fetch("/api/projects/submit", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    title, sector, islamic_formula, requested_amount, duration_months,
+                    expected_return_rate, description, guarantees
+                })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.detail || "فشل تقديم المشروع");
+
+            alert(data.message);
+            closeProjectModal();
+            loadMyProjects();
+        } catch (err) {
+            alert(err.message);
+        }
+    }
+</script>
+{% endblock %}
+

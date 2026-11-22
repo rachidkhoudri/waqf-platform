@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ platform_name }}{% endblock %}</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Cairo & Amiri -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #f8fafc;
+        }
+        .font-quran {
+            font-family: 'Amiri', serif;
+        }
+        .emerald-gradient {
+            background: linear-gradient(135deg, #064e3b 0%, #047857 50%, #0f766e 100%);
+        }
+        .gold-gradient {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        waqf: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            500: '#10b981',
+                            700: '#047857',
+                            800: '#065f46',
+                            900: '#064e3b',
+                        },
+                        gold: {
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="text-slate-800 flex flex-col min-h-screen">
+    <!-- الشريط العلوي التنظيمي -->
+    <div class="bg-slate-900 text-slate-300 text-xs py-1.5 px-4 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
+            <div class="flex items-center space-x-2 space-x-reverse">
+                <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>الجمهورية الجزائرية الديمقراطية الشعبية | منصة الأوقاف النقدية الاستثمارية المعتمدة</span>
+            </div>
+            <div class="text-slate-400">
+                مرجعية قانونية: <span class="text-emerald-400 font-semibold">القانون 25-06 الصادر في 19 يوليو 2025 (ج.ر رقم 47)</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- شريط التنقل الرئيسي -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <!-- الشعار -->
+                <a href="/" class="flex items-center space-x-3 space-x-reverse">
+                    <div class="w-12 h-12 rounded-xl emerald-gradient flex items-center justify-center text-white font-bold text-2xl shadow-md">
+                        و
+                    </div>
+                    <div>
+                        <span class="text-2xl font-black text-waqf-900 block leading-tight">وقف تاك <span class="text-gold-600 text-sm font-bold">WaqfTech</span></span>
+                        <span class="text-xs text-slate-500 block">نحو وقف نقدي استثماري مستدام ومستقل</span>
+                    </div>
+                </a>
+
+                <!-- روابط التنقل -->
+                <nav class="hidden md:flex space-x-6 space-x-reverse text-sm font-semibold text-slate-600">
+                    <a href="/" class="hover:text-waqf-700 transition">الرئيسية</a>
+                    <a href="/dashboard/waqif" class="hover:text-waqf-700 transition flex items-center gap-1">
+                        <span class="w-2 h-2 rounded-full bg-waqf-700"></span> مسار الواقف
+                    </a>
+                    <a href="/dashboard/funder" class="hover:text-waqf-700 transition">الفرص الاستثمارية (الممول)</a>
+                    <a href="/dashboard/project" class="hover:text-waqf-700 transition">طلب تمويل (رائد الأعمال)</a>
+                    <a href="/transparency" class="hover:text-waqf-700 transition text-waqf-800 bg-waqf-50 px-3 py-1 rounded-md border border-waqf-200">الشفافية والحوكمة</a>
+                </nav>
+
+                <!-- أزرار الدخول والتسجيل -->
+                <div class="flex items-center space-x-3 space-x-reverse">
+                    <a href="/login" class="text-sm font-bold text-waqf-800 hover:text-waqf-900 px-3 py-2 rounded-lg hover:bg-slate-100 transition">
+                        تسجيل الدخول
+                    </a>
+                    <a href="/register" class="text-sm font-bold text-white bg-waqf-700 hover:bg-waqf-800 px-4 py-2.5 rounded-lg shadow-sm transition flex items-center gap-1">
+                        <span>تسجيل جديد</span>
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- المحتوى المتغير -->
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- التذييل الرسمي -->
+    <footer class="bg-slate-900 text-slate-400 text-sm mt-16 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 space-x-reverse mb-4">
+                        <div class="w-8 h-8 rounded-lg emerald-gradient flex items-center justify-center text-white font-bold text-lg">و</div>
+                        <span class="text-xl font-bold text-white">وقف تاك (WaqfTech)</span>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        أول منصة رقمية للأوقاف النقدية والاستثمار الإسلامي في الجزائر، تعمل وفق مقتضيات القانون رقم 25-06 الصادر في 19 يوليو 2025. تضمن استقلالية وقف كل واقف، والالتزام بأحكام الشريعة بإلغاء ضمان رأس المال والفصل التام للحسابات.
+                    </p>
+                </div>
+
+                <div>
+                    <h3 class="text-white font-bold text-sm mb-4">أدوار المنصة</h3>
+                    <ul class="space-y-2 text-xs">
+                        <li><a href="/dashboard/waqif" class="hover:text-emerald-400">حساب الواقف (حبس المال وتحديد الشروط)</a></li>
+                        <li><a href="/dashboard/funder" class="hover:text-emerald-400">حساب الممول الفردي (استثمار رأس المال الخاص)</a></li>
+                        <li><a href="/dashboard/project" class="hover:text-emerald-400">حساب صاحب المشروع (طلب التمويل والإنجاز)</a></li>
+                        <li><a href="/transparency" class="hover:text-emerald-400">حساب الجهة المستفيدة (فحص واعتماد المؤسسات)</a></li>
+                        <li><a href="/dashboard/sharia" class="hover:text-emerald-400">الهيئة الشرعية المستقلة (الرقابة والفتاوى)</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-white font-bold text-sm mb-4">الصيغ الإسلامية السبع (القانون 25-06)</h3>
+                    <ul class="space-y-2 text-xs">
+                        <li>المشاركة (المادة 78) &bull; المضاربة (المادة 81)</li>
+                        <li>المرابحة للآمر بالشراء (المادة 82)</li>
+                        <li>السَّلَم الزراعي والسلعي (المادة 83)</li>
+                        <li>الاستصناع والمقاولة (المادة 75)</li>
+                        <li>الإجارة المنتهية بالتمليك والتشغيلية (المادة 70)</li>
+                        <li>المزارعة والمساقاة (المادتان 71 و 72)</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-white font-bold text-sm mb-4">الحوكمة والامتثال</h3>
+                    <div class="bg-slate-800 p-3 rounded-lg text-xs space-y-2">
+                        <div class="flex justify-between text-slate-300">
+                            <span>فترة التراجع:</span>
+                            <span class="text-emerald-400 font-bold">72 ساعة كاملة</span>
+                        </div>
+                        <div class="flex justify-between text-slate-300">
+                            <span>أجرة الناظر:</span>
+                            <span class="text-emerald-400 font-bold">10% من الأرباح فقط</span>
+                        </div>
+                        <div class="flex justify-between text-slate-300">
+                            <span>حسابات الضمان:</span>
+                            <span class="text-emerald-400 font-bold">مفصولة ومحمية</span>
+                        </div>
+                        <div class="flex justify-between text-slate-300">
+                            <span>ضمان رأس المال:</span>
+                            <span class="text-amber-400 font-bold">ملغي شرعاً وقانوناً</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-slate-800 text-center text-xs text-slate-500 flex flex-col md:flex-row justify-between items-center gap-2">
+                <div>جميع الحقوق محفوظة &copy; 2025-2026 منصة وقف تاك - الجمهورية الجزائرية الديمقراطية الشعبية</div>
+                <div class="text-emerald-500 font-semibold">مطابق للمرسوم التشريعي والأحكام الشرعية للاستثمار الوقفي</div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+

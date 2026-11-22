@@ -1,0 +1,315 @@
+{% extends "base.html" %}
+
+{% block title %}تسجيل حساب جديد والتحقق من الهوية (KYC) | {{ platform_name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 py-12">
+    <!-- خطوات التسجيل -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between text-xs font-bold text-slate-500 mb-2">
+            <span id="step-lbl-1" class="text-waqf-700">1. البيانات الشخصية</span>
+            <span id="step-lbl-2">2. رمز التحقق (OTP)</span>
+            <span id="step-lbl-3">3. التحقق من الهوية (KYC)</span>
+            <span id="step-lbl-4">4. اختيار الدور</span>
+        </div>
+        <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+            <div id="progress-bar" class="bg-waqf-700 h-full w-1/4 transition-all duration-300"></div>
+        </div>
+    </div>
+
+    <!-- بطاقة النموذج -->
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 p-8">
+        <!-- الخطوة 1: البيانات الشخصية والموافقة -->
+        <div id="step-1">
+            <h2 class="text-2xl font-black text-slate-900 mb-2">تسجيل حساب جديد</h2>
+            <p class="text-slate-500 text-xs mb-6">الخطوة 1 - 4: أدخل بياناتك الشخصية للبدء في استخدام منصة وقف تاك</p>
+
+            <form id="register-form" onsubmit="handleRegister(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">الاسم الكامل (كما في بطاقة الهوية)</label>
+                    <input type="text" id="full_name" required placeholder="مثال: محمد بن عبد الله الجزائري"
+                           class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-waqf-500 focus:outline-none">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">رقم الهاتف (الجزائر)</label>
+                        <input type="tel" id="phone" required placeholder="0550123456"
+                               class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-waqf-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">البريد الإلكتروني</label>
+                        <input type="email" id="email" required placeholder="user@example.dz"
+                               class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-waqf-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">كلمة المرور</label>
+                    <input type="password" id="password" required placeholder="••••••••" minlength="8"
+                           class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-waqf-500 focus:outline-none">
+                </div>
+
+                <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs space-y-2">
+                    <label class="flex items-start gap-2 cursor-pointer">
+                        <input type="checkbox" id="accept_terms" required class="mt-0.5 rounded text-waqf-700 focus:ring-waqf-500">
+                        <span class="text-slate-600">
+                            أوافق على <span class="font-bold text-slate-800">الشروط والأحكام وسياسة الخصوصية وإفصاح المخاطر الشرعية</span> وقرأتها كاملة قبل التفعيل، وأقر بأن أموال الاستثمار تخضع لأحكام الشريعة الإسلامية بدون ضمان لرأس المال.
+                        </span>
+                    </label>
+                </div>
+
+                <button type="submit" class="w-full bg-waqf-700 hover:bg-waqf-800 text-white font-bold py-3 rounded-xl transition text-sm shadow-md">
+                    متابعة وتلقي رمز التحقق (OTP)
+                </button>
+            </form>
+        </div>
+
+        <!-- الخطوة 2: رمز التحقق OTP -->
+        <div id="step-2" class="hidden">
+            <h2 class="text-2xl font-black text-slate-900 mb-2">تأكيد رقم الهاتف</h2>
+            <p class="text-slate-500 text-xs mb-6">الخطوة 5: أرسلنا رمز تحقق (OTP) عبر الهاتف أو البريد. أدخله لتفعيل الحساب:</p>
+
+            <form onsubmit="handleVerifyOtp(event)" class="space-y-5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">رمز التحقق المكون من 6 أرقام</label>
+                    <input type="text" id="otp_code" required maxlength="6" placeholder="مثال: 123456"
+                           class="w-full text-center tracking-widest text-2xl font-bold px-4 py-3 rounded-xl border border-slate-300 text-slate-900 focus:ring-2 focus:ring-waqf-500 focus:outline-none">
+                    <p id="otp-hint" class="text-xs text-emerald-600 font-semibold mt-2 text-center"></p>
+                </div>
+
+                <button type="submit" class="w-full bg-waqf-700 hover:bg-waqf-800 text-white font-bold py-3 rounded-xl transition text-sm shadow-md">
+                    تأكيد وتفعيل الحساب
+                </button>
+            </form>
+        </div>
+
+        <!-- الخطوة 3: التحقق من الهوية KYC -->
+        <div id="step-3" class="hidden">
+            <h2 class="text-2xl font-black text-slate-900 mb-2">التحقق من الهوية (KYC)</h2>
+            <p class="text-slate-500 text-xs mb-6">الخطوات 6 - 8: متطلب قانوني إلزامي لحماية الأوقاف وفق قانون مكافحة غسل الأموال (05-01) وقانون الأوقاف 25-06</p>
+
+            <form onsubmit="handleSubmitKyc(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">نوع وثيقة الهوية</label>
+                    <select id="kyc_id_type" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-waqf-500 focus:outline-none">
+                        <option value="بطاقة التعريف البيومترية الوطنية">بطاقة التعريف البيومترية الوطنية الجزائرية</option>
+                        <option value="جواز السفر البيومتري">جواز السفر البيومتري الجزائري</option>
+                        <option value="رخصة السياقة البيومترية">رخصة السياقة البيومترية</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">رقم التعريف الوطني (NIN)</label>
+                    <input type="text" id="kyc_id_number" required placeholder="أدخل رقم التعريف المطبوع على البطاقة"
+                           class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-waqf-500 focus:outline-none">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="border-2 border-dashed border-slate-300 rounded-xl p-4 text-center">
+                        <div class="text-slate-400 mb-1">📄</div>
+                        <span class="text-xs font-bold text-slate-700 block">صورة بطاقة الهوية</span>
+                        <span class="text-[10px] text-slate-500 block">نسخة واضحة للوجهين</span>
+                        <input type="file" class="text-xs mt-2 w-full text-slate-500">
+                    </div>
+
+                    <div class="border-2 border-dashed border-slate-300 rounded-xl p-4 text-center">
+                        <div class="text-slate-400 mb-1">🤳</div>
+                        <span class="text-xs font-bold text-slate-700 block">صورة شخصية (سيلفي)</span>
+                        <span class="text-[10px] text-slate-500 block">صورة حديثة واضحة الوجه</span>
+                        <input type="file" class="text-xs mt-2 w-full text-slate-500">
+                    </div>
+                </div>
+
+                <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-xs text-amber-800">
+                    مدة المراجعة العادية: 24 إلى 48 ساعة. في بيئة التطوير سيتم الاعتماد الفوري لتسهيل التجربة.
+                </div>
+
+                <button type="submit" class="w-full bg-waqf-700 hover:bg-waqf-800 text-white font-bold py-3 rounded-xl transition text-sm shadow-md">
+                    رفع الوثائق وتأكيد الهوية
+                </button>
+            </form>
+        </div>
+
+        <!-- الخطوة 4: اختيار الدور (واقف / مستثمر / صاحب مشروع / جهة مستفيدة) -->
+        <div id="step-4" class="hidden">
+            <h2 class="text-2xl font-black text-slate-900 mb-2">اختيار نوع الحساب</h2>
+            <p class="text-slate-500 text-xs mb-6">الخطوات 9 - 11: يمكنك اختيار دور واحد أو الجمع بين الأدوار معاً</p>
+
+            <form onsubmit="handleSelectRoles(event)" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <label class="border-2 border-slate-200 has-[:checked]:border-waqf-600 has-[:checked]:bg-waqf-50 p-4 rounded-xl cursor-pointer block transition">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-bold text-slate-900 text-sm">حساب واقف</span>
+                            <input type="checkbox" id="role_waqif" checked class="rounded text-waqf-700">
+                        </div>
+                        <p class="text-xs text-slate-500">إيداع وقف نقدي، حبس الأصل، وتوجيه الأرباح لأحد المجالات الثمانية.</p>
+                    </label>
+
+                    <label class="border-2 border-slate-200 has-[:checked]:border-waqf-600 has-[:checked]:bg-waqf-50 p-4 rounded-xl cursor-pointer block transition">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-bold text-slate-900 text-sm">حساب ممول (مستثمر)</span>
+                            <input type="checkbox" id="role_funder" class="rounded text-waqf-700">
+                        </div>
+                        <p class="text-xs text-slate-500">تمويل مشاريع بمالك الخاص والحصول على عوائد بالصيغ الإسلامية.</p>
+                    </label>
+
+                    <label class="border-2 border-slate-200 has-[:checked]:border-waqf-600 has-[:checked]:bg-waqf-50 p-4 rounded-xl cursor-pointer block transition">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-bold text-slate-900 text-sm">حساب صاحب مشروع</span>
+                            <input type="checkbox" id="role_project_owner" class="rounded text-waqf-700">
+                        </div>
+                        <p class="text-xs text-slate-500">طلب تمويل لمشروع صناعي، زراعي، تجاري أو خدمي.</p>
+                    </label>
+
+                    <label class="border-2 border-slate-200 has-[:checked]:border-waqf-600 has-[:checked]:bg-waqf-50 p-4 rounded-xl cursor-pointer block transition">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-bold text-slate-900 text-sm">جهة مستفيدة</span>
+                            <input type="checkbox" id="role_beneficiary" class="rounded text-waqf-700">
+                        </div>
+                        <p class="text-xs text-slate-500">جمعية أو مؤسسة معتمدة في أحد المجالات الوقفية الثمانية لتلقي الريع.</p>
+                    </label>
+                </div>
+
+                <button type="submit" class="w-full bg-waqf-700 hover:bg-waqf-800 text-white font-bold py-3.5 rounded-xl transition text-sm shadow-md mt-4">
+                    إكمال التسجيل والدخول للوحة التحكم
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    let registeredPhone = "";
+    let accessToken = "";
+    let registeredUserId = null;
+
+    async function handleRegister(e) {
+        e.preventDefault();
+        const full_name = document.getElementById("full_name").value;
+        const phone = document.getElementById("phone").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const accept_terms = document.getElementById("accept_terms").checked;
+
+        try {
+            const res = await fetch("/api/auth/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ full_name, phone, email, password, accept_terms })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.detail || "فشل التسجيل");
+
+            registeredPhone = phone;
+            registeredUserId = data.user_id;
+
+            // إظهار رمز التحقق في الشاشة للتجربة السريعة
+            document.getElementById("otp-hint").innerText = `(رمز التحقق التجريبي هو: ${data.mock_otp_for_testing})`;
+            
+            // الانتقال للخطوة 2
+            document.getElementById("step-1").classList.add("hidden");
+            document.getElementById("step-2").classList.remove("hidden");
+            document.getElementById("progress-bar").style.width = "50%";
+            document.getElementById("step-lbl-2").classList.add("text-waqf-700");
+        } catch (err) {
+            alert(err.message);
+        }
+    }
+
+    async function handleVerifyOtp(e) {
+        e.preventDefault();
+        const otp_code = document.getElementById("otp_code").value;
+
+        try {
+            const res = await fetch("/api/auth/verify-otp", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ phone_or_email: registeredPhone, otp_code })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.detail || "رمز التحقق خاطئ");
+
+            accessToken = data.access_token;
+            localStorage.setItem("waqf_token", accessToken);
+
+            // الانتقال للخطوة 3 (KYC)
+            document.getElementById("step-2").classList.add("hidden");
+            document.getElementById("step-3").classList.remove("hidden");
+            document.getElementById("progress-bar").style.width = "75%";
+            document.getElementById("step-lbl-3").classList.add("text-waqf-700");
+        } catch (err) {
+            alert(err.message);
+        }
+    }
+
+    async function handleSubmitKyc(e) {
+        e.preventDefault();
+        const id_type = document.getElementById("kyc_id_type").value;
+        const id_number = document.getElementById("kyc_id_number").value;
+
+        const formData = new FormData();
+        formData.append("id_type", id_type);
+        formData.append("id_number", id_number);
+
+        try {
+            const res = await fetch("/api/auth/kyc/submit", {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${accessToken}` },
+                body: formData
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.detail || "فشل رفع وثائق الهوية");
+
+            // تفعيل فوري للاستخدام التجريبي
+            await fetch(`/api/auth/admin/kyc/approve/${registeredUserId}`, {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${accessToken}` }
+            });
+
+            // الانتقال للخطوة 4 (اختيار الدور)
+            document.getElementById("step-3").classList.add("hidden");
+            document.getElementById("step-4").classList.remove("hidden");
+            document.getElementById("progress-bar").style.width = "100%";
+            document.getElementById("step-lbl-4").classList.add("text-waqf-700");
+        } catch (err) {
+            alert(err.message);
+        }
+    }
+
+    async function handleSelectRoles(e) {
+        e.preventDefault();
+        const is_waqif = document.getElementById("role_waqif").checked;
+        const is_funder = document.getElementById("role_funder").checked;
+        const is_project_owner = document.getElementById("role_project_owner").checked;
+        const is_beneficiary = document.getElementById("role_beneficiary").checked;
+
+        try {
+            const res = await fetch("/api/auth/select-roles", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${accessToken}`
+                },
+                body: JSON.stringify({ is_waqif, is_funder, is_project_owner, is_beneficiary })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.detail || "فشل تحديد الدور");
+
+            // توجيه تلقائي للوحة المناسبة
+            if (is_waqif) {
+                window.location.href = "/dashboard/waqif";
+            } else if (is_funder) {
+                window.location.href = "/dashboard/funder";
+            } else if (is_project_owner) {
+                window.location.href = "/dashboard/project";
+            } else {
+                window.location.href = "/";
+            }
+        } catch (err) {
+            alert(err.message);
+        }
+    }
+</script>
+{% endblock %}
+

@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block title %}لوحة تحكم الهيئة الشرعية المستقلة | {{ platform_name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-6 border-b border-slate-200">
+        <div>
+            <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                <h1 class="text-2xl font-black text-slate-900">لوحة تحكم الهيئة الشرعية المستقلة</h1>
+                <span class="text-xs font-semibold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">الفحص والرقابة والفتوى</span>
+            </div>
+            <p class="text-xs text-slate-500 mt-1">
+                دراسة المشاريع المقدمة، مطابقة الصيغ السبع مع الفصل العاشر من القانون 25-06، والتأكد التام من خلوها من شبهات الربا والغرر وضمان رأس المال.
+            </p>
+        </div>
+    </div>
+
+    <!-- بطاقات المراجعة الشرعية -->
+    <div class="mt-8 space-y-6">
+        <div class="flex justify-between items-center">
+            <h2 class="text-lg font-bold text-slate-900">المشاريع بانتظار إجازة الهيئة الشرعية</h2>
+            <span class="text-xs text-slate-500">يجب تسبيب أي رفض كتابياً وتحديد فئة المخاطر</span>
+        </div>
+
+        <div id="sharia-pending-list" class="space-y-4">
+            <div class="text-center text-slate-400 py-10 bg-white rounded-2xl border">
+                جاري فحص قائمة المشاريع المعروضة على الهيئة...
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- مودال اتخاذ القرار الشرعي -->
+<div id="sharia-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-lg w-full p-6 text-xs">
+        <div class="flex justify-between items-center border-b pb-3 mb-4">
+            <h3 class="font-bold text-slate-900 text-sm">إصدار قرار الهيئة الشرعية</h3>
+            <button onclick="closeShariaModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+        </div>
+
+        <form onsubmit="handleShariaDecision(event)" class="space-y-4">
+            <input type="hidden" id="sharia_prj_id">
+
+            <div>
+                <label class="block font-bold text-slate-700 mb-1">اسم العالم / عضو الهيئة الموقع</label>
+                <input type="text" id="sharia_scholar_name" required value="د. عبد الرحمن الجزائري (رئيس الهيئة الشرعية)"
+                       class="w-full p-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-1 focus:ring-amber-500">
+            </div>
+
+            <div>
+                <label class="block font-bold text-slate-700 mb-1">قرار الهيئة</label>
+                <select id="sharia_verdict" class="w-full p-2.5 rounded-xl border border-slate-300 font-bold">
+                    <option value="APPROVED" class="text-emerald-700">إجازة المشروع واعتماده للطرح الاستثماري (&check; معتمد)</option>
+                    <option value="REJECTED" class="text-red-700">رفض المشروع لعدم التوافق الشرعي (&cross; مرفوض)</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block font-bold text-slate-700 mb-1">فئة المخاطر الشرعية والاستثمارية</label>
+                <select id="sharia_risk_grade" class="w-full p-2.5 rounded-xl border border-slate-300">
+                    <option value="LOW">منخفضة المخاطر (صيغ بيع وإجارة بضمانات)</option>
+                    <option value="MEDIUM" selected>متوسطة المخاطر (صناعي وزراعي متوازن)</option>
+                    <option value="HIGH">مرتفعة المخاطر (مشاريع ناشئة وشراكات جديدة)</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block font-bold text-slate-700 mb-1">نص الفتوى أو أسباب الرفض وملاحظات التكييف الفقهي</label>
+                <textarea id="sharia_notes" rows="4" required class="w-full p-2.5 rounded-xl border border-slate-300 focus:outline-none"
+                          placeholder="اكتب التكييف الشرعي للصيغة والضوابط المعتمدة..."></textarea>
+            </div>
+
+            <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded-xl transition text-sm shadow">
+                توقيع واعتماد القرار الشرعي رسمياً
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const token = localStorage.getItem("waqf_token");
+
+    document.addEventListener("DOMContentLoaded", () => {
+        loadPendingSharia();
+    });
+
+    async function loadPendingSharia() {
+        try {
+            const res = await fetch("/api/projects/sharia/pending");
+            const projects = await res.json();
+            const container = document.getElementById("sharia-pending-list");
+
+            if (projects.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-white p-10 rounded-2xl text-center border border-slate-200">
+                        <div class="text-3xl mb-2">📜</div>
+                        <h4 class="font-bold text-slate-800 text-sm">لا توجد مشاريع معلقة حالياً</h4>
+                        <p class="text-slate-400 text-xs mt-1">تم البت في كافة طلبات التمويل المقدمة من رواد الأعمال.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = "";
+            projects.forEach(p => {
+                const card = document.createElement("div");
+                card.className = "bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-xs";
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="font-bold text-slate-900 text-sm">${p.title}</span>
+                            <span class="font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">${p.project_code}</span>
+                            <span class="bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded">الصيغة: ${p.formula}</span>
+                        </div>
+                        <div class="text-slate-500 space-x-3 space-x-reverse">
+                            <span>القطاع: <strong>${p.sector}</strong></span>
+                            <span>المبلغ المطلوب: <strong>${p.requested_amount.toLocaleString()} د.ج</strong></span>
+                            <span>المدة: <strong>${p.duration_months} شهر</strong></span>
+                        </div>
+                        <div class="text-[11px] text-slate-600 mt-2 bg-slate-50 p-2 rounded">
+                            الضمانات المشروعة: ${p.guarantees || 'رهن تجاري'}
+                        </div>
+                    </div>
+
+                    <button onclick="openShariaModal(${p.id})" class="bg-amber-600 hover:bg-amber-700 text-white font-bold px-4 py-2 rounded-xl transition shadow shrink-0">
+                        دراسة وإصدار الفتوى &larr;
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    function openShariaModal(prjId) {
+        document.getElementById("sharia_prj_id").value = prjId;
+        document.getElementById("sharia_notes").value = "بعد دراسة النشاط والصيغة المقترحة، تبين توافق العقد التام مع أحكام الشريعة الإسلامية ومقتضيات الفصل العاشر من قانون الأوقاف رقم 25-06، ولا سيما الالتزام بعدم ضمان رأس المال.";
+        document.getElementById("sharia-modal").classList.remove("hidden");
+    }
+
+    function closeShariaModal() {
+        document.getElementById("sharia-modal").classList.add("hidden");
+    }
+
+    async function handleShariaDecision(e) {
+        e.preventDefault();
+        const projectId = parseInt(document.getElementById("sharia_prj_id").value);
+        const scholarName = document.getElementById("sharia_scholar_name").value;
+        const verdict = document.getElementById("sharia_verdict").value === "APPROVED";
+        const riskGrade = document.getElementById("sharia_risk_grade").value;
+        const notes = document.getElementById("sharia_notes").value;
+
+        try {
+            const res = await fetch("/api/projects/sharia/decision", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    project_id: projectId,
+                    is_approved: verdict,
+                    sharia_scholar_name: scholarName,
+                    notes: notes,
+                    assigned_risk_grade: riskGrade
+                })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.detail || "فشل تسجيل القرار");
+
+            alert(data.message);
+            closeShariaModal();
+            loadPendingSharia();
+        } catch (err) {
+            alert(err.message);
+        }
+    }
+</script>
+{% endblock %}
+

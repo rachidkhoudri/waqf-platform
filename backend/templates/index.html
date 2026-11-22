@@ -1,0 +1,276 @@
+{% extends "base.html" %}
+
+{% block title %}منصة وقف تاك | المنصة الوقفية الاستثمارية في الجزائر{% endblock %}
+
+{% block content %}
+<!-- قسم البداية والبانر الترحيبي -->
+<div class="relative overflow-hidden emerald-gradient text-white py-20 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <div class="lg:col-span-7 space-y-6">
+                <div class="inline-flex items-center gap-2 bg-emerald-800/80 border border-emerald-500/30 text-emerald-200 text-xs font-semibold px-3 py-1.5 rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-gold-500"></span>
+                    <span>وفق قانون الأوقاف الجزائري الجديد رقم 25-06 لسنة 2025</span>
+                </div>
+                <h1 class="text-4xl sm:text-5xl font-black leading-tight tracking-tight">
+                    استثمر صدقتك الجارية <br>
+                    <span class="text-gold-400">بوقف نقدي مستقل</span> وأثر خيري مستدام
+                </h1>
+                <p class="text-emerald-100 text-base sm:text-lg leading-relaxed">
+                    منصة وقف تاك (WaqfTech) تُمكّنك من حبس مالك النقدي في وقف مستقل يُستثمر وفق أحكام الشريعة الإسلامية بالصيغ السبع المعتمدة، مع صيانة أصل رأس المال وتوجيه كامل الأرباح للمجالات الوقفية الثمانية التي تختارها طائعاً مختاراً.
+                </p>
+                <div class="flex flex-wrap gap-4 pt-4">
+                    <a href="/register" class="bg-gold-500 hover:bg-gold-600 text-slate-900 font-bold px-6 py-3.5 rounded-xl shadow-lg transition flex items-center gap-2 text-base">
+                        <span>ابدأ وقفك المستقل الآن</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    </a>
+                    <a href="/dashboard/funder" class="bg-white/10 hover:bg-white/20 text-white font-semibold px-6 py-3.5 rounded-xl border border-white/20 transition text-base">
+                        تصفح الفرص الاستثمارية للممولين
+                    </a>
+                </div>
+
+                <!-- ميزات الأمان الشرعي -->
+                <div class="grid grid-cols-3 gap-4 pt-6 border-t border-emerald-700/60 text-xs">
+                    <div>
+                        <div class="font-bold text-white text-sm">وقف مستقل 100%</div>
+                        <div class="text-emerald-200">حساب وسجل وقفي مفرز لكل واقف</div>
+                    </div>
+                    <div>
+                        <div class="font-bold text-white text-sm">72 ساعة تراجع</div>
+                        <div class="text-emerald-200">فترة مراجعة وسحب كامل للمبلغ</div>
+                    </div>
+                    <div>
+                        <div class="font-bold text-white text-sm">10% أجرة ناظر</div>
+                        <div class="text-emerald-200">تقتطع من الأرباح المحققة فقط</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- بطاقة المؤشرات الحية -->
+            <div class="lg:col-span-5">
+                <div class="bg-white text-slate-800 rounded-2xl p-6 shadow-2xl border border-slate-100 space-y-5">
+                    <div class="flex justify-between items-center border-b pb-4">
+                        <span class="text-sm font-bold text-slate-600">المؤشرات العامة للمنصة</span>
+                        <span class="text-xs bg-emerald-100 text-emerald-800 font-semibold px-2.5 py-1 rounded-md">محدث لحظياً</span>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200/80">
+                            <span class="text-xs text-slate-500 block">إجمالي أصول الأوقاف النقدية المستقلة</span>
+                            <div class="text-2xl font-black text-waqf-900 mt-1 flex items-baseline gap-1">
+                                <span id="kpi-waqf-capital">12,500,000.00</span>
+                                <span class="text-xs font-semibold text-slate-500">{{ currency }}</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-100">
+                                <span class="text-xs text-emerald-700 block">الأرباح الموزعة للخيرات</span>
+                                <div class="text-lg font-bold text-emerald-900 mt-1">
+                                    <span id="kpi-distributed">1,450,000</span> <span class="text-[10px]">{{ currency }}</span>
+                                </div>
+                            </div>
+                            <div class="p-3 bg-amber-50 rounded-xl border border-amber-100">
+                                <span class="text-xs text-amber-700 block">رصيد صندوق الاحتياطي</span>
+                                <div class="text-lg font-bold text-amber-900 mt-1">
+                                    <span id="kpi-reserve">185,000</span> <span class="text-[10px]">{{ currency }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 text-center text-xs">
+                            <div class="p-2.5 bg-slate-100 rounded-lg">
+                                <span class="text-slate-500 block">مشاريع استثمارية</span>
+                                <span class="text-base font-bold text-slate-800">14 مشروعاً</span>
+                            </div>
+                            <div class="p-2.5 bg-slate-100 rounded-lg">
+                                <span class="text-slate-500 block">أوقاف مسجلة</span>
+                                <span class="text-base font-bold text-slate-800">128 وقفاً مستقلاً</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center pt-2">
+                        <a href="/transparency" class="text-xs font-bold text-waqf-700 hover:underline">
+                            عرض سجل الشفافية والتدقيق الشرعي المفصل &larr;
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- المجالات الوقفية الثمانية المعتمدة -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="text-center max-w-3xl mx-auto mb-12">
+        <span class="text-xs font-bold uppercase tracking-wider text-waqf-700 bg-waqf-50 px-3 py-1 rounded-full border border-waqf-200">مصارف الأرباح الشرعية</span>
+        <h2 class="text-3xl font-black text-slate-900 mt-3">الفئات الوقفية الثمانية (حدد شرط وقفك)</h2>
+        <p class="text-slate-600 text-sm mt-2">
+            عملاً بالمادتين 18 و 20 من القانون 25-06، يمكنك اختيار جهة واحدة أو توزيع أرباح وقفك بنسب تختارها مع شروط جغرافية وفئات مستهدفة.
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {% for cat_id, cat in categories.items() %}
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 hover:shadow-md hover:border-waqf-500 transition group">
+            <div class="w-12 h-12 rounded-xl bg-waqf-100 text-waqf-800 flex items-center justify-center font-bold text-xl mb-4 group-hover:bg-waqf-700 group-hover:text-white transition">
+                {{ loop.index }}
+            </div>
+            <h3 class="font-bold text-lg text-slate-900 mb-2">{{ cat.name }}</h3>
+            <p class="text-xs text-slate-500 leading-relaxed">{{ cat.description }}</p>
+            <div class="mt-4 pt-3 border-t border-slate-100 text-xs font-semibold text-waqf-700 flex items-center justify-between">
+                <span>عوائد الأرباح فقط</span>
+                <span>أصل المال مصون</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- القطاعات الاستثمارية والصيغ الإسلامية السبع -->
+<div class="bg-slate-100 py-16 border-y border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <div class="lg:col-span-5 space-y-6">
+                <span class="text-xs font-bold text-waqf-700 bg-white px-3 py-1 rounded-full border border-slate-300">الفصل العاشر من القانون 25-06</span>
+                <h2 class="text-3xl font-black text-slate-900 leading-snug">
+                    سبع صيغ تمويلية إسلامية في خمسة قطاعات تنموية
+                </h2>
+                <p class="text-slate-600 text-sm leading-relaxed">
+                    لا تكتفي المنصة بالتبرع التقليدي، بل تستثمر أصول الأوقاف النقدية في تمويل رواد الأعمال والمشاريع الحقيقية لإنعاش الاقتصاد الوطني وفق صيغ شرعية دقيقة، دون ضمان رأس المال، ومحاربة لكل صور الربا أو الغرر.
+                </p>
+
+                <div class="space-y-3">
+                    <div class="flex items-start gap-3 bg-white p-3.5 rounded-xl border border-slate-200">
+                        <div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">&check;</div>
+                        <div>
+                            <span class="font-bold text-sm text-slate-800 block">القطاعات الخمسة</span>
+                            <span class="text-xs text-slate-500">صناعي، تجاري، زراعي، خدمي، بنية تحتية مستدامة.</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-3 bg-white p-3.5 rounded-xl border border-slate-200">
+                        <div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">&check;</div>
+                        <div>
+                            <span class="font-bold text-sm text-slate-800 block">رقابة الهيئة الشرعية المستقلة</span>
+                            <span class="text-xs text-slate-500">فحص مستقل لكل مشروع واعتماد الفتاوى كتابياً قبل طرح الفرصة.</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-3 bg-white p-3.5 rounded-xl border border-slate-200">
+                        <div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">&check;</div>
+                        <div>
+                            <span class="font-bold text-sm text-slate-800 block">حسابات ضمان Escrow مفصولة</span>
+                            <span class="text-xs text-slate-500">لا يُصرف التمويل نقداً دفعة واحدة بل مرتبطاً بنسب الإنجاز الميداني.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- استعراض الصيغ السبع -->
+            <div class="lg:col-span-7">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {% for formula_key, f in formulas.items() %}
+                    <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200 hover:border-waqf-600 transition">
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-bold text-base text-waqf-900">{{ f.name }}</h4>
+                            <span class="text-[10px] bg-slate-100 text-slate-600 font-semibold px-2 py-0.5 rounded">{{ f.legal_article }}</span>
+                        </div>
+                        <p class="text-xs text-slate-600 mb-2">{{ f.nature }}</p>
+                        <div class="text-[11px] text-slate-500 bg-slate-50 p-2 rounded border border-slate-100 space-y-1">
+                            <div><span class="font-semibold text-slate-700">مصدر العائد:</span> {{ f.return_source }}</div>
+                            <div><span class="font-semibold text-amber-700">تحمل الخسارة:</span> {{ f.loss_bearer }}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- مسارات المستخدمين في المنصة -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="text-center max-w-2xl mx-auto mb-12">
+        <h2 class="text-3xl font-black text-slate-900">اختر دورك في منظومة وقف تاك</h2>
+        <p class="text-slate-600 text-sm mt-2">
+            يمكن للمستخدم الواحد الجمع بين أكثر من دور بعد استيفاء التحقق (KYC/AML)
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <!-- الواقف -->
+        <div class="bg-white border-2 border-waqf-600 rounded-2xl p-6 flex flex-col justify-between shadow-sm">
+            <div>
+                <span class="text-xs font-bold text-waqf-700 bg-waqf-50 px-2.5 py-1 rounded">المسار الأول</span>
+                <h3 class="text-xl font-bold text-slate-900 mt-3 mb-2">حساب الواقف</h3>
+                <p class="text-xs text-slate-500 leading-relaxed">
+                    إيداع مبلغ الوقف بالدينار الجزائري، تحديد شرط الوقف على المجالات الثمانية، توقيع العقد الإلكتروني، ومتابعة الأرباح والشهادات الرقمية.
+                </p>
+            </div>
+            <a href="/dashboard/waqif" class="mt-6 w-full text-center bg-waqf-700 hover:bg-waqf-800 text-white font-bold py-2.5 rounded-xl text-sm transition">
+                لوحة تحكم الواقف
+            </a>
+        </div>
+
+        <!-- الممول الفردي -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between shadow-sm hover:border-slate-400 transition">
+            <div>
+                <span class="text-xs font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded">المسار الثاني (أ)</span>
+                <h3 class="text-xl font-bold text-slate-900 mt-3 mb-2">حساب الممول</h3>
+                <p class="text-xs text-slate-500 leading-relaxed">
+                    تمويل المشاريع الاستثمارية برأس مالك الخاص، اختيار الصيغة والقطاع، توقيع عقد التمويل، والحصول على حصتك من الأرباح في محفظتك.
+                </p>
+            </div>
+            <a href="/dashboard/funder" class="mt-6 w-full text-center bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-xl text-sm transition">
+                الفرص الاستثمارية
+            </a>
+        </div>
+
+        <!-- صاحب المشروع -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between shadow-sm hover:border-slate-400 transition">
+            <div>
+                <span class="text-xs font-bold text-purple-700 bg-purple-50 px-2.5 py-1 rounded">المسار الثاني (ب)</span>
+                <h3 class="text-xl font-bold text-slate-900 mt-3 mb-2">صاحب المشروع</h3>
+                <p class="text-xs text-slate-500 leading-relaxed">
+                    طلب تمويل لمشروعك الصناعي أو التجاري أو الزراعي، رفع دراسة الجدوى والضمانات، والتنفيذ على مراحل لصرف الدفعات التشغيلية.
+                </p>
+            </div>
+            <a href="/dashboard/project" class="mt-6 w-full text-center bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-xl text-sm transition">
+                تقديم طلب تمويل
+            </a>
+        </div>
+
+        <!-- الجهة المستفيدة -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between shadow-sm hover:border-slate-400 transition">
+            <div>
+                <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded">المستفيدون</span>
+                <h3 class="text-xl font-bold text-slate-900 mt-3 mb-2">الجهة المستفيدة</h3>
+                <p class="text-xs text-slate-500 leading-relaxed">
+                    المؤسسات والجمعيات المعتمدة في المجالات الثمانية لتلقي عوائد الوقف في حسابها البنكي RIP مع رفع تقارير الإنفاق والأثر.
+                </p>
+            </div>
+            <a href="/transparency" class="mt-6 w-full text-center bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-2.5 rounded-xl text-sm transition">
+                فحص واعتماد الجهات
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- دعوة للعمل CTA -->
+<div class="bg-slate-900 text-white py-12 border-t border-slate-800">
+    <div class="max-w-4xl mx-auto px-4 text-center space-y-4">
+        <h3 class="text-2xl font-bold">جاهز لإنشاء أول وقف نقدي رقمي لك في الجزائر؟</h3>
+        <p class="text-slate-400 text-sm">
+            خطوات بسيطة: تسجل، توثق هويتك، تودع بالدينار الجزائري، تختار شرطك، وتوقع عقدك الإلكتروني في دقائق مع مهلة 72 ساعة للتراجع.
+        </p>
+        <div class="pt-4">
+            <a href="/register" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3 rounded-xl transition inline-block">
+                فتح حساب وقف جديد
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

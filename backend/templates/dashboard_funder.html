@@ -1,0 +1,345 @@
+{% extends "base.html" %}
+
+{% block title %}لوحة تحكم الممول (الفرص الاستثمارية) | {{ platform_name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-6 border-b border-slate-200">
+        <div>
+            <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-blue-600"></span>
+                <h1 class="text-2xl font-black text-slate-900">الفرص الاستثمارية للممولين</h1>
+                <span class="text-xs font-semibold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">استثمار بالصيغ الإسلامية السبع</span>
+            </div>
+            <p class="text-xs text-slate-500 mt-1">
+                استثمر رأس مالك الخاص في مشاريع تنموية معتمدة شرعياً وفنياً في الجزائر، متوافقة مع القانون 25-06 بدون ضمان لرأس المال.
+            </p>
+        </div>
+
+        <button onclick="switchTab('my-investments')" id="tab-btn-inv" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-4 py-2 rounded-xl text-xs transition">
+            💼 محفظة استثماراتي
+        </button>
+    </div>
+
+    <!-- فلاتر التصفية -->
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+        <div>
+            <label class="block font-bold text-slate-700 mb-1">القطاع الاستثماري</label>
+            <select id="filter-sector" onchange="loadOpportunities()" class="w-full p-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                <option value="">كافة القطاعات (الخمسة)</option>
+                {% for k, s in sectors.items() %}
+                <option value="{{ k }}">{{ s.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label class="block font-bold text-slate-700 mb-1">الصيغة الإسلامية</label>
+            <select id="filter-formula" onchange="loadOpportunities()" class="w-full p-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                <option value="">كافة الصيغ (السبع)</option>
+                {% for k, f in formulas.items() %}
+                <option value="{{ k }}">{{ f.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label class="block font-bold text-slate-700 mb-1">فئة المخاطر</label>
+            <select id="filter-risk" onchange="loadOpportunities()" class="w-full p-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                <option value="">كافة الفئات</option>
+                <option value="LOW">منخفضة المخاطر (Low Risk)</option>
+                <option value="MEDIUM">متوسطة المخاطر (Medium Risk)</option>
+                <option value="HIGH">مرتفعة المخاطر (High Risk)</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- شبكة الفرص الاستثمارية المطروحة -->
+    <div id="opportunities-view" class="mt-8">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-bold text-slate-900">المشاريع المتاحة للتمويل حالياً</h2>
+            <span class="text-xs text-slate-500">تخضع لرقابة الهيئة الشرعية المستقلة والتدقيق المالي</span>
+        </div>
+
+        <div id="opportunities-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="col-span-full text-center text-slate-400 py-10 bg-white rounded-2xl border">
+                جاري تحميل الفرص الاستثمارية...
+            </div>
+        </div>
+    </div>
+
+    <!-- قائمة استثماراتي السابقة -->
+    <div id="my-investments-view" class="mt-8 hidden">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-bold text-slate-900">سجل استثماراتي وعقود التمويل</h2>
+            <button onclick="switchTab('opportunities')" class="text-blue-700 font-bold text-xs hover:underline">
+                &larr; العودة لتصفح الفرص
+            </button>
+        </div>
+        <div id="my-investments-list" class="space-y-4">
+            <div class="text-center text-slate-400 py-8 bg-white rounded-2xl border">
+                جاري تحميل محفظتك الاستثمارية...
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- مودال التمويل والتعاقد -->
+<div id="fund-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-lg w-full p-6">
+        <div class="flex justify-between items-center border-b pb-3 mb-4">
+            <div>
+                <h3 id="modal-project-title" class="font-black text-slate-900 text-lg">تمويل المشروع</h3>
+                <span id="modal-project-code" class="text-xs font-mono text-slate-500"></span>
+            </div>
+            <button onclick="closeFundModal()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
+        </div>
+
+        <form onsubmit="handleExecuteFunding(event)" class="space-y-4 text-xs">
+            <div class="p-3 bg-slate-50 rounded-xl space-y-2">
+                <div class="flex justify-between">
+                    <span class="text-slate-500">الصيغة المعتمدة:</span>
+                    <span id="modal-formula" class="font-bold text-waqf-900"></span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-500">العائد السنوي المتوقع:</span>
+                    <span id="modal-return" class="font-bold text-emerald-700"></span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-500">فئة المخاطر:</span>
+                    <span id="modal-risk" class="font-bold"></span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-500">المتبقي لاكتمال التمويل:</span>
+                    <span id="modal-remaining" class="font-bold text-slate-900"></span>
+                </div>
+            </div>
+
+            <div>
+                <label class="block font-bold text-slate-700 mb-1">المبلغ الذي ترغب في استثماره ({{ currency }})</label>
+                <input type="number" id="fund_amount" min="10000" step="5000" required
+                       class="w-full p-2.5 rounded-xl border border-slate-300 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+
+            <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-amber-900 space-y-2">
+                <div class="font-bold">إقرار شرعي وقانوني إلزامي:</div>
+                <p>
+                    أقر بأنني اطلعت على دراسة الجدوى والصيغة الإسلامية المعتمدة للمشروع، وأعلم بأن <strong>رأس المال غير مضمون</strong> وأن الاستثمار يخضع لاحتمالية الربح والخسارة عملاً بقاعدة الغنم بالغرم (المادة 78 و 81 من قانون 25-06)، وأن أموالي ستودع في حساب الضمان المستقل (Escrow).
+                </p>
+                <label class="flex items-start gap-2 pt-1 cursor-pointer font-bold">
+                    <input type="checkbox" id="acknowledge_risk" required class="mt-0.5 rounded text-blue-700">
+                    <span>أوافق على إفصاح المخاطر وأوقع عقد التمويل إلكترونياً</span>
+                </label>
+            </div>
+
+            <input type="hidden" id="modal-project-id">
+            <button type="submit" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 rounded-xl transition text-sm shadow">
+                تأكيد التمويل وتحويل المبلغ لحساب الضمان
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const token = localStorage.getItem("waqf_token");
+    let currentSelectedProject = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+        loadOpportunities();
+    });
+
+    function switchTab(tab) {
+        if (tab === 'my-investments') {
+            document.getElementById("opportunities-view").classList.add("hidden");
+            document.getElementById("my-investments-view").classList.remove("hidden");
+            loadMyInvestments();
+        } else {
+            document.getElementById("my-investments-view").classList.add("hidden");
+            document.getElementById("opportunities-view").classList.remove("hidden");
+            loadOpportunities();
+        }
+    }
+
+    async function loadOpportunities() {
+        const sector = document.getElementById("filter-sector").value;
+        const formula = document.getElementById("filter-formula").value;
+        const risk = document.getElementById("filter-risk").value;
+
+        const url = new URL("/api/projects/opportunities", window.location.origin);
+        if (sector) url.searchParams.append("sector", sector);
+        if (formula) url.searchParams.append("formula", formula);
+        if (risk) url.searchParams.append("risk", risk);
+
+        try {
+            const res = await fetch(url);
+            const projects = await res.json();
+            const grid = document.getElementById("opportunities-grid");
+
+            if (projects.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center text-slate-400 py-12 bg-white rounded-2xl border">لا توجد مشاريع مطروحة تطابق معايير التصفية المحددة حالياً.</div>`;
+                return;
+            }
+
+            grid.innerHTML = "";
+            projects.forEach(p => {
+                const card = document.createElement("div");
+                card.className = "bg-white rounded-2xl p-5 shadow-sm border border-slate-200 hover:shadow-md hover:border-blue-400 transition flex flex-col justify-between";
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-2 py-0.5 rounded">${p.sector_name}</span>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded ${p.risk_grade === 'LOW' ? 'bg-emerald-100 text-emerald-800' : (p.risk_grade === 'MEDIUM' ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800')}">
+                                مخاطر ${p.risk_grade === 'LOW' ? 'منخفضة' : (p.risk_grade === 'MEDIUM' ? 'متوسطة' : 'مرتفعة')}
+                            </span>
+                        </div>
+
+                        <h3 class="font-bold text-slate-900 text-base mb-1.5 leading-snug">${p.title}</h3>
+                        <p class="text-xs text-slate-500 mb-3 line-clamp-2">${p.description}</p>
+
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 mb-3 text-xs space-y-1">
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">الصيغة:</span>
+                                <span class="font-bold text-slate-800">${p.formula_name} (${p.legal_article})</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">العائد المتوقع:</span>
+                                <span class="font-bold text-emerald-700">${p.expected_return_rate}% سنوياً</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">المدة:</span>
+                                <span class="font-bold text-slate-800">${p.duration_months} شهراً</span>
+                            </div>
+                        </div>
+
+                        <!-- شريط تقدم التمويل -->
+                        <div class="space-y-1 mb-4">
+                            <div class="flex justify-between text-[11px] font-semibold text-slate-600">
+                                <span>الممول: ${p.funded_amount.toLocaleString()} د.ج</span>
+                                <span>${p.progress_funded_pct}%</span>
+                            </div>
+                            <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                                <div class="bg-blue-600 h-full rounded-full" style="width: ${Math.min(100, p.progress_funded_pct)}%"></div>
+                            </div>
+                            <div class="text-[10px] text-slate-400 text-left">
+                                المطلوب: ${p.requested_amount.toLocaleString()} د.ج
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick='openFundModal(${JSON.stringify(p)})' class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-sm">
+                        موّل هذا المشروع الآن &larr;
+                    </button>
+                `;
+                grid.appendChild(card);
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    function openFundModal(p) {
+        if (!token) {
+            window.location.href = "/login";
+            return;
+        }
+        currentSelectedProject = p;
+        document.getElementById("modal-project-id").value = p.id;
+        document.getElementById("modal-project-title").innerText = p.title;
+        document.getElementById("modal-project-code").innerText = p.project_code;
+        document.getElementById("modal-formula").innerText = `${p.formula_name} (${p.legal_article})`;
+        document.getElementById("modal-return").innerText = `${p.expected_return_rate}% سنوياً (غير مضمون)`;
+        document.getElementById("modal-risk").innerText = p.risk_grade;
+        document.getElementById("modal-remaining").innerText = `${p.remaining_amount.toLocaleString()} د.ج`;
+        document.getElementById("fund_amount").value = Math.min(50000, p.remaining_amount);
+        document.getElementById("fund_amount").max = p.remaining_amount;
+
+        document.getElementById("fund-modal").classList.remove("hidden");
+    }
+
+    function closeFundModal() {
+        document.getElementById("fund-modal").classList.add("hidden");
+    }
+
+    async function handleExecuteFunding(e) {
+        e.preventDefault();
+        const projectId = parseInt(document.getElementById("modal-project-id").value);
+        const amount = parseFloat(document.getElementById("fund_amount").value);
+        const acknowledge_risk = document.getElementById("acknowledge_risk").checked;
+
+        try {
+            const res = await fetch("/api/funding/fund-individual", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    project_id: projectId,
+                    amount: amount,
+                    acknowledge_risk: acknowledge_risk
+                })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.detail || "فشل التمويل");
+
+            alert(data.message);
+            closeFundModal();
+            loadOpportunities();
+        } catch (err) {
+            alert(err.message);
+        }
+    }
+
+    async function loadMyInvestments() {
+        try {
+            const res = await fetch("/api/funding/my-investments", {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            const investments = await res.json();
+            const list = document.getElementById("my-investments-list");
+
+            if (investments.length === 0) {
+                list.innerHTML = `<div class="bg-white rounded-2xl p-8 text-center text-slate-400 border">ليس لديك استثمارات جارية بعد. تصفح الفرص وموّل مشروعك الأول.</div>`;
+                return;
+            }
+
+            list.innerHTML = "";
+            investments.forEach(inv => {
+                const item = document.createElement("div");
+                item.className = "bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-xs";
+                item.innerHTML = `
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="font-bold text-slate-900 text-sm">${inv.project.title}</span>
+                            <span class="bg-blue-50 text-blue-700 font-semibold px-2 py-0.5 rounded">${inv.project.sector}</span>
+                        </div>
+                        <div class="text-slate-500 space-x-3 space-x-reverse">
+                            <span>عقد رقم: <strong class="text-slate-800">${inv.contract_number}</strong></span>
+                            <span>الصيغة: <strong class="text-slate-800">${inv.project.formula}</strong></span>
+                            <span>التاريخ: ${inv.created_at}</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-6">
+                        <div class="text-left">
+                            <span class="text-slate-400 block">المبلغ الممول:</span>
+                            <span class="text-base font-black text-slate-900">${inv.amount.toLocaleString()} د.ج</span>
+                        </div>
+                        <div class="text-left">
+                            <span class="text-slate-400 block">نسبة الإنجاز:</span>
+                            <span class="text-sm font-bold text-emerald-700">${inv.project.progress_pct}%</span>
+                        </div>
+                        <span class="bg-emerald-100 text-emerald-800 font-bold px-3 py-1 rounded-lg">
+                            في حساب الضمان
+                        </span>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    }
+</script>
+{% endblock %}
+
